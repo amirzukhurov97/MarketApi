@@ -5,5 +5,6 @@ namespace MarketApi.Models
     public class Measurement : EntityBase
     {
         public string? Name { get; set; }
+        
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MarketApi.Models
 {
-    public class Type : EntityBase
+    public class Address : EntityBase
     {
         public string? Name { get; set; }
     }

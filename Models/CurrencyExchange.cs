@@ -2,7 +2,7 @@
 
 namespace MarketApi.Models
 {
-    public class Currency : EntityBase
+    public class CurrencyExchange : EntityBase
     {
         public decimal USDtoTJS { get; set; }
         public DateTime DateTime {  get; set; }
