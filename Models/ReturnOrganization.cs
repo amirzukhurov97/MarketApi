@@ -4,5 +4,6 @@ namespace MarketApi.Models
 {
     public class ReturnOrganization : EntityBase
     {
+
     }
 }

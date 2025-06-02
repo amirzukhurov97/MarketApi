@@ -1,6 +1,8 @@
-﻿namespace MarketApi.Models
+﻿using MarketApi.Models.Abstract;
+
+namespace MarketApi.Models
 {
-    public class ReturnCustomer
+    public class ReturnCustomer : EntityBase
     {
     }
 }

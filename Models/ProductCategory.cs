@@ -4,6 +4,6 @@ namespace MarketApi.Models
 {
     public class ProductCategory : EntityBase
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 }
