@@ -7,9 +7,11 @@ namespace MarketApi.Mappers
     public class ProductProfile : Profile
     {
         public ProductProfile() {
-            CreateMap<Product, ProductDTO>()
+            CreateMap<Product, ProductUpdateRequest>()
                 .ReverseMap();
-            //CreateMap<ProductDTO, Product>();
+            CreateMap<Product, ProductResponse>()
+            .ForMember(dest => dest.MeasurementName, opt => opt.MapFrom(src => src.Measurement.Name))
+            .ForMember(dest => dest.ProductCategoryName, opt => opt.MapFrom(src => src.ProductCategory.Name));
         }
     }
 }

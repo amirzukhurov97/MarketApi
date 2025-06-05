@@ -1,6 +1,6 @@
 ﻿namespace MarketApi.DTOs.ProductDTOs
 {
-    public record ProductDTO
+    public record ProductUpdateRequest
     {
         public string Name { get; set; } = string.Empty;
         public double Capacity { get; set; }

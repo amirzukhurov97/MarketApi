@@ -12,9 +12,8 @@ namespace MarketApi.Models
         public string? Description { get; set; }
         public Guid ProductCategoryId { get; set; }
         public ProductCategory ProductCategory { get; set; } = null!;
-        public Guid MeasuremantId { get; set; }
+        public Guid MeasurementId { get; set; }
         public Measurement Measurement { get; set; } = null!;
-
         public List<Purchase> Purchases { get; set; } = new List<Purchase>();
         public List<Sale> Sales { get; set; } = new List<Sale>();
         public List<ReturnCustomer> ReturnCustomers { get; set; } = new List<ReturnCustomer>();

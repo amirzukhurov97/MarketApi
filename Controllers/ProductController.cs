@@ -19,7 +19,7 @@ namespace MarketApi.Controllers
             try
             {
                 var productList = productServise.GetAll();
-                if (productList == null || !productList.Any())
+                if (productList == null)
                 {
                     return BadRequest("Don't have products");
                 }
@@ -40,8 +40,16 @@ namespace MarketApi.Controllers
                 if (productList==null)
                 {
                     return BadRequest($"With id ={id} Don't have products");
-                }                    
-                return Ok(productList);
+                }
+                ProductResponse? productResponse = new ProductResponse
+                {
+                    Name = productList.Name,
+                    Capacity = productList.Capacity,
+                    Description = productList.Description,
+                    MeasurementName = productList.Measurement?.Name,
+                    ProductCategoryName = productList.ProductCategory?.Name
+                };
+                return Ok(productResponse);
             }
             catch (Exception ex)
             {
@@ -51,11 +59,17 @@ namespace MarketApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(ProductDTO prod, [FromServices] IMapper _mapper)
+        public IActionResult Post(ProductRequest productRequest, [FromServices] IMapper _mapper)
         {
-            
-            productServise.Add(prod);
-            return Created("", prod);
+            try
+            {
+                productServise.Add(productRequest);
+                return Created("", productRequest);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         [HttpDelete]
@@ -77,7 +91,7 @@ namespace MarketApi.Controllers
             }        
         }
         [HttpPut]
-        public IActionResult Put(Guid id, ProductDTO prod, [FromServices] IMapper mapper) 
+        public IActionResult Put(Guid id, ProductUpdateRequest prod, [FromServices] IMapper mapper) 
         {
             try
             {

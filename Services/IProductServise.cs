@@ -5,10 +5,10 @@ namespace MarketApi.Services
 {
     public interface IProductServise
     {
-        IEnumerable<Product> GetAll();
+        IEnumerable<ProductResponse> GetAll();
         Product GetById(Guid id);
-        Product Add(ProductDTO product);
+        Product Add(ProductRequest product);
         Product Remove(Guid id);
-        Product Update(Guid id, ProductDTO product);
+        Product Update(Guid id, ProductUpdateRequest product);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MarketApi.Infrastructure.EntityConfigurations;
 using MarketApi.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarketApi.Infrastructure.DataBase
@@ -19,7 +20,10 @@ namespace MarketApi.Infrastructure.DataBase
         public DbSet<Address> Addresses { get; set; } = null!;
         public DbSet<CurrencyExchange> CurrencyExchange { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
-
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+            //Database.EnsureCreated();
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var assembly = typeof(ProductConfiguration).Assembly;

@@ -1,19 +1,21 @@
-﻿using MarketApi.Models;
+﻿using AutoMapper;
+using MarketApi.DTOs.Measurement;
+using MarketApi.DTOs.ProductDTOs;
+using MarketApi.Models;
+using MarketApi.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarketApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class MeasurementController : ControllerBase
+    [Route("api/[controller]")]
+    public class MeasurementController(IMeasurementService measurementService) : ControllerBase
     {
-        public static List<Measurement> _measurements = new();
-        public MeasurementController() {
-            _measurements.Add(new Measurement {Name = "kg" });
-        }
-
         [HttpGet]
-        public IActionResult Get() {
+        public IActionResult Get()
+        {
+            var _measurements = measurementService.GetAll();
             if (_measurements == null)
             {
                 return Ok("Don't have elements");
@@ -22,14 +24,62 @@ namespace MarketApi.Controllers
         }
 
         [HttpPost]
-        public Task<Measurement> Post(Measurement measurement)
+        public IActionResult Post(MeasurementRequest measurementRequest)
         {
-            var measure = new Measurement
+            var measurement= measurementService.Add(measurementRequest);
+            return Ok(measurement);
+        }
+
+        [HttpGet("{id:Guid}")]
+        public IActionResult GetById(Guid id)
+        {
+            try
             {
-                Name = measurement.Name
-            };
-            _measurements.Add(measure);
-            return Task.FromResult(measure);
+                var measurementList = measurementService.GetById(id);
+                if (measurementList == null)
+                {
+                    return BadRequest($"With id ={id} Don't have measurements");
+                }
+                return Ok(measurementList);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(Guid id)
+        {
+            try
+            {
+                var resDel = measurementService.Remove(id);
+                if (resDel == null)
+                {
+                    return BadRequest();
+                }
+                return Ok(resDel);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        [HttpPut]
+        public IActionResult Put(Guid id, MeasurementRequest measurementUpdate, [FromServices] IMapper mapper)
+        {
+            try
+            {
+
+                var measurement = measurementService.Update(id, measurementUpdate);
+                return Ok(measurement);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

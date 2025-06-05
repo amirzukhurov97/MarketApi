@@ -1,30 +1,31 @@
-﻿using MarketApi.Interfacies;
+﻿using MarketApi.Infrastructure.DataBase;
+using MarketApi.Interfacies;
 using MarketApi.Models.Abstract;
+using Microsoft.EntityFrameworkCore;
 
 namespace MarketApi.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : EntityBase
+    public class Repository<T>(ApplicationDbContext context) : IRepository<T> where T : EntityBase
     {
-        private static List<T> _list = new List<T>();
         public T Add(T entity)
         {
             try
             {
-                _list.Add(entity);
+                context.Add(entity);
+                context.SaveChanges();  
                 return entity;
             }
             catch (Exception ex)
             {
-
                 throw new Exception(ex.Message);
             }
         }
 
-        public IEnumerable<T> GetAll()
+        public IQueryable<T> GetAll()
         {
             try
             {
-                return _list;
+                return context.Set<T>().AsQueryable();
             }
             catch (Exception ex)
             {
@@ -34,7 +35,15 @@ namespace MarketApi.Repositories
 
         public T GetById(Guid id)
         {
-            return _list.Single(e=>e.Id==id);
+            try
+            {
+                return context.Find<T>(id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public T Remove(Guid id)
@@ -42,7 +51,8 @@ namespace MarketApi.Repositories
             var entity = GetById(id);
             if (entity != null) 
             {
-                _list.Remove(entity);
+                context.Remove(entity);
+                context.SaveChanges();
                 return entity;
             }
             return null;
@@ -51,12 +61,8 @@ namespace MarketApi.Repositories
 
         public T Update(Guid id, T entity)
         {
-            var entit = GetById(id);
-            if (entit == null)
-            {
-                return null;
-            }
-            entit = entity;
+            context.Update(entity);
+            context.SaveChanges();
             return entity;
         }
     }

@@ -60,7 +60,7 @@ namespace MarketApi.Controllers
             var product = new Customer
             {
                 Name = customer.Name,
-                Address = customer.Address,
+                Address = customer.AddressName,
                 PhoneNumber = customer.PhoneNumber
             };
             _repository.Add(product);
@@ -97,7 +97,7 @@ namespace MarketApi.Controllers
                 var product = new Customer
                 {
                     Name = customer.Name,
-                    Address = customer.Address,
+                    Address = customer.AddressName,
                     PhoneNumber = customer.PhoneNumber
                 };
                 _repository.Update(id, product);

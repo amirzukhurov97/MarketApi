@@ -9,11 +9,9 @@ namespace MarketApi.Infrastructure.EntityConfigurations
         public void Configure(EntityTypeBuilder<Product> builder)
         {
             builder.HasOne(p => p.ProductCategory)
-                .WithMany(pc => pc.Products)                
-                .HasForeignKey(p => p.ProductCategoryId)                
-                .OnDelete(DeleteBehavior.Restrict);   
-
-
+                .WithMany(pc => pc.Products)
+                .HasForeignKey(p => p.ProductCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
