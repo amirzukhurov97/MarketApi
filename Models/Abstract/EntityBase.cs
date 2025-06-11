@@ -1,6 +1,4 @@
-﻿
-
-namespace MarketApi.Models.Abstract
+﻿namespace MarketApi.Models.Abstract
 {
     public abstract class EntityBase
     {        

@@ -1,5 +1,6 @@
 ﻿using MarketApi.DTOs.CustomerDTO;
-using MarketApi.DTOs.OrganizationDTO;
+using MarketApi.DTOs.Organization;
+using MarketApi.DTOs.OrganizationRequest;
 using MarketApi.Interfacies;
 using MarketApi.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -54,12 +55,12 @@ namespace MarketApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(OrganizationDTO organization)
+        public IActionResult Post(OrganizationRequest organization)
         {
             var organizationPost = new Organization
             {
                 Name = organization.Name,
-                Address = organization.Address,
+                AddressId = organization.AddressId,
                 PhoneNumber = organization.PhoneNumber
             };
             _repository.Add(organizationPost);
@@ -89,14 +90,14 @@ namespace MarketApi.Controllers
             }
         }
         [HttpPut]
-        public IActionResult Put(Guid id, OrganizationDTO organization)
+        public IActionResult Put(Guid id, OrganizationUpdateRequest organization)
         {
             try
             {
                 var organizationUpdate = new Organization
                 {
                     Name = organization.Name,
-                    Address = organization.Address,
+                    AddressId = organization.AddressId,
                     PhoneNumber = organization.PhoneNumber
                 };
                 _repository.Update(id, organizationUpdate);

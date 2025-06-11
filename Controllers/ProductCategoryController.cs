@@ -1,29 +1,28 @@
 ﻿using System.Diagnostics.Metrics;
+using MarketApi.DTOs.ProductCategory;
 using MarketApi.Models;
+using MarketApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarketApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProductCategoryController:ControllerBase
+    public class ProductCategoryController(IProductCategoryService categoryService):ControllerBase
     {
-        public static List<ProductCategory> productCategories = new List<ProductCategory>();
-        public ProductCategoryController()
-        {
-            productCategories.Add(new ProductCategory{Name = "Первый" });
-        }
+        
 
         [HttpGet]
         public IActionResult Get()
         {
             try
             {
-                if (productCategories == null)
+                var productCategory = categoryService.GetAll();
+                if (productCategory == null)
                 {
-                    return NotFound("Don't have elements");
+                    return Ok("Don't have elements");
                 }
-                return Ok(productCategories);
+                return Ok(productCategory);
             }
             catch (Exception ex)
             {
@@ -33,16 +32,12 @@ namespace MarketApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(ProductCategory category)
+        public IActionResult Post(ProductCategoryRequest category)
         {
             try
             {
-                var categ = new ProductCategory
-                {
-                    Name = category.Name
-                };
-                productCategories.Add(categ);
-                return Ok(category);
+                var categ = categoryService.Add(category);
+                return Ok(categ);
             }
             catch (Exception ex)
             {

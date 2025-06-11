@@ -8,19 +8,34 @@ namespace MarketApi.Services
 {
     public class ProductServise(IProductRepository repository, IMapper mapper, IServiceProvider serviceProvider) : IProductServise
     {   
-        public Product Add(ProductRequest product)
+        public Product Add(DTOs.ProductDTOs.ProductRequest product)
         {
-            var productAdd = new Product
+            try
             {
-                Id = Guid.NewGuid(),
-                Name = product.Name,
-                Capacity = product.Capacity,
-                Description = product.Description,
-                MeasurementId = product.MeasurementId,
-                ProductCategoryId = product.ProductCategoryId
-            };
-            repository.Add(productAdd);
-            return productAdd;
+                var productExists = repository.GetAll().Any(p => p.Name == product.Name && p.Capacity == product.Capacity && p.MeasurementId == product.MeasurementId && p.ProductCategoryId == product.ProductCategoryId);
+                if (productExists)
+                {
+                    throw new Exception("Product already exists with the same name, capacity, measurement, and category.");
+                }
+                var productAdd = new Product
+                {
+                    Id = Guid.NewGuid(),
+                    Name = product.Name,
+                    Capacity = product.Capacity,
+                    Description = product.Description,
+                    MeasurementId = product.MeasurementId,
+                    ProductCategoryId = product.ProductCategoryId
+                };
+                //var productAdd = mapper.Map<Product>(product);
+                repository.Add(productAdd);
+                return productAdd;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
         }
 
         public IEnumerable<ProductResponse> GetAll()
@@ -30,15 +45,7 @@ namespace MarketApi.Services
             if (products.Count > 0) {
                 foreach (var product in products)
                 {
-                    var response = new ProductResponse
-                    {
-                        Name = product.Name,
-                        Capacity = product.Capacity,
-                        Description = product.Description,
-                        MeasurementName = product.Measurement?.Name,
-                        ProductCategoryName = product.ProductCategory?.Name
-
-                    };
+                    var response = mapper.Map<ProductResponse>(product);
                     responses.Add(response);
                 }
             }

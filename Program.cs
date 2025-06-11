@@ -26,13 +26,16 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 builder.Services.AddScoped<IMeasurementRepository, MeasurementRepository>();
+builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
 
 builder.Services.AddScoped<IProductServise, ProductServise>();
 builder.Services.AddScoped<IMeasurementService, MeasurementService>();
+builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 
 builder.Services.AddAutoMapper(op =>
 {
     op.AddMaps(typeof(ProductProfile).Assembly);
+    op.AddMaps(typeof(OrganizationProfile).Assembly);
 });
 var app = builder.Build();
 

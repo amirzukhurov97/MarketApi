@@ -19,4 +19,14 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\Address\" />
+    <Folder Include="DTOs\CurrencyExchange\" />
+    <Folder Include="DTOs\ReturnOrganization\" />
+    <Folder Include="DTOs\ReturnCustomer\" />
+    <Folder Include="DTOs\Sale\" />
+    <Folder Include="DTOs\Purchase\" />
+    <Folder Include="DTOs\OrganizationType\" />
+  </ItemGroup>
+
 </Project>

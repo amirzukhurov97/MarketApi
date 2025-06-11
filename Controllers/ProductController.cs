@@ -59,7 +59,7 @@ namespace MarketApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(ProductRequest productRequest, [FromServices] IMapper _mapper)
+        public IActionResult Post(DTOs.ProductDTOs.ProductRequest productRequest, [FromServices] IMapper _mapper)
         {
             try
             {

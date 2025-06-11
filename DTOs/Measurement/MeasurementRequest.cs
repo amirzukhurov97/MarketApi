@@ -1,6 +1,6 @@
 ﻿namespace MarketApi.DTOs.Measurement
 {
-    public class MeasurementRequest
+    public record MeasurementRequest
     {
         public string? Name { get; set; }
     }

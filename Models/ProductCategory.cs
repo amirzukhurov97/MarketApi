@@ -1,4 +1,5 @@
-﻿using MarketApi.Models.Abstract;
+﻿
+using MarketApi.Models.Abstract;
 
 namespace MarketApi.Models
 {

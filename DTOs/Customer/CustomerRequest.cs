@@ -2,10 +2,10 @@
 
 namespace MarketApi.DTOs.CustomerDTO
 {
-    public record CustomerDTO
+    public record CustomerRequest
     {
         public string Name { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
-        public Address? AddressName { get; set; }
+        public Guid AddressId { get; set; }
     }
 }

@@ -55,12 +55,12 @@ namespace MarketApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(CustomerDTO customer)
+        public IActionResult Post(CustomerRequest customer)
         {
             var product = new Customer
             {
                 Name = customer.Name,
-                Address = customer.AddressName,
+                AddressId = customer.AddressId,
                 PhoneNumber = customer.PhoneNumber
             };
             _repository.Add(product);
@@ -90,14 +90,14 @@ namespace MarketApi.Controllers
             }
         }
         [HttpPut]
-        public IActionResult Put(Guid id, CustomerDTO customer)
+        public IActionResult Put(Guid id, CustomerRequest customer)
         {
             try
             {
                 var product = new Customer
                 {
                     Name = customer.Name,
-                    Address = customer.AddressName,
+                    AddressId = customer.AddressId,
                     PhoneNumber = customer.PhoneNumber
                 };
                 _repository.Update(id, product);

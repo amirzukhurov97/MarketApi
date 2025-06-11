@@ -7,7 +7,7 @@ namespace MarketApi.Services
     {
         IEnumerable<ProductResponse> GetAll();
         Product GetById(Guid id);
-        Product Add(ProductRequest product);
+        Product Add(DTOs.ProductDTOs.ProductRequest product);
         Product Remove(Guid id);
         Product Update(Guid id, ProductUpdateRequest product);
     }
