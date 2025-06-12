@@ -1,10 +1,8 @@
 using AutoMapper;
 using MarketApi.DTOs.ProductDTOs;
-using MarketApi.Interfacies;
-using MarketApi.Models;
-using MarketApi.Repositories;
 using MarketApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 
 namespace MarketApi.Controllers
 {
@@ -14,15 +12,11 @@ namespace MarketApi.Controllers
     {
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAll()
         {
             try
             {
-                var productList = productServise.GetAll();
-                if (productList == null)
-                {
-                    return BadRequest("Don't have products");
-                }
+                var productList = productServise.GetAll();                
                 return Ok(productList);
             }
             catch (Exception ex)
@@ -36,19 +30,7 @@ namespace MarketApi.Controllers
         {
             try
             {
-                var productList = productServise.GetById(id);
-                if (productList==null)
-                {
-                    return BadRequest($"With id ={id} Don't have products");
-                }
-                ProductResponse? productResponse = new ProductResponse
-                {
-                    Name = productList.Name,
-                    Capacity = productList.Capacity,
-                    Description = productList.Description,
-                    MeasurementName = productList.Measurement?.Name,
-                    ProductCategoryName = productList.ProductCategory?.Name
-                };
+                var productResponse = productServise.GetById(id);                
                 return Ok(productResponse);
             }
             catch (Exception ex)
@@ -59,7 +41,7 @@ namespace MarketApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(DTOs.ProductDTOs.ProductRequest productRequest, [FromServices] IMapper _mapper)
+        public IActionResult Post(ProductRequest productRequest)
         {
             try
             {
@@ -77,11 +59,7 @@ namespace MarketApi.Controllers
         {
             try
             {                
-                var resDel = productServise.Remove(id);
-                if(resDel == null)
-                {
-                    return BadRequest();
-                }
+                var resDel = productServise.Remove(id);                
                 return Ok(resDel);
 
             }
@@ -91,12 +69,11 @@ namespace MarketApi.Controllers
             }        
         }
         [HttpPut]
-        public IActionResult Put(Guid id, ProductUpdateRequest prod, [FromServices] IMapper mapper) 
+        public IActionResult Put(Guid id, ProductUpdateRequest productUpdate) 
         {
             try
-            {
-                
-                var product = productServise.Update(id, prod);
+            {                
+                var product = productServise.Update(id, productUpdate);
                 return Ok(product);
             }
             catch (Exception ex)

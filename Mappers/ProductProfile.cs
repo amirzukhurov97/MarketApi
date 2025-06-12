@@ -7,7 +7,7 @@ namespace MarketApi.Mappers
     public class ProductProfile : Profile
     {
         public ProductProfile() {
-            CreateMap<Product, DTOs.ProductDTOs.ProductRequest>()
+            CreateMap<Product, ProductRequest>()
                 .ForMember(pr => pr.ProductCategoryId, p=> p.MapFrom(p => p.ProductCategoryId))
                 .ForMember(pr => pr.MeasurementId, p=> p.MapFrom(p => p.MeasurementId))
                 .ReverseMap();

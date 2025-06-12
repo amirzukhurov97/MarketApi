@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using MarketApi.DTOs.ProductDTOs;
 using MarketApi.Interfacies;
 using MarketApi.Models;
@@ -8,7 +9,7 @@ namespace MarketApi.Services
 {
     public class ProductServise(IProductRepository repository, IMapper mapper, IServiceProvider serviceProvider) : IProductServise
     {   
-        public Product Add(DTOs.ProductDTOs.ProductRequest product)
+        public Product Add(ProductRequest product)
         {
             try
             {
@@ -17,27 +18,15 @@ namespace MarketApi.Services
                 {
                     throw new Exception("Product already exists with the same name, capacity, measurement, and category.");
                 }
-                var productAdd = new Product
-                {
-                    Id = Guid.NewGuid(),
-                    Name = product.Name,
-                    Capacity = product.Capacity,
-                    Description = product.Description,
-                    MeasurementId = product.MeasurementId,
-                    ProductCategoryId = product.ProductCategoryId
-                };
-                //var productAdd = mapper.Map<Product>(product);
+                var productAdd = mapper.Map<Product>(product);
                 repository.Add(productAdd);
                 return productAdd;
             }
             catch (Exception)
             {
-
                 throw;
-            }
-            
+            }            
         }
-
         public IEnumerable<ProductResponse> GetAll()
         {
             List<ProductResponse>? responses = new List<ProductResponse>();
@@ -49,24 +38,60 @@ namespace MarketApi.Services
                     responses.Add(response);
                 }
             }
+            else
+            {
+                throw new Exception("No products found.");
+            }
             return responses;
         }
 
-        public Product GetById(Guid id)
+        public IEnumerable<ProductResponse> GetById(Guid id)
         {
-            return repository.GetById(id);
+            List<ProductResponse>? response = new List<ProductResponse>();
+            var products = repository.GetAll().Where(p=>p.Id==id).Include(pc => pc.ProductCategory).Include(pm => pm.Measurement).ToList();
+            if (products == null)
+            {
+                throw new Exception($"Product with id {id} not found.");
+            }
+            foreach (var product in products)
+            {
+                var productResponse = mapper.Map<ProductResponse>(product);
+                response.Add(productResponse);
+            }
+            
+            return response;
         }
 
         public Product Remove(Guid id)
         {
-           var resDelete =  repository.Remove(id);
+            var resDelete =  repository.Remove(id);
+            if (resDelete == null)
+            {
+                throw new Exception($"Product with id {id} not found.");
+            }
             return resDelete;
         }
-        public Product Update(Guid id, ProductUpdateRequest product)
+        public ProductResponse Update(Guid id, ProductUpdateRequest product)
         {
-            var productUpdate = mapper.Map<Product>(product);
-            var update = repository.Update(id, productUpdate);
-            return update;
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product), "ProductUpdateRequest cannot be null");
+            }
+            var existingProduct = repository.GetById(id);
+            if (existingProduct == null) 
+            {
+                throw new Exception($"Product with id {id} not found.");
+            }
+            else
+            {
+                var productUpdate = mapper.Map<Product>(product);
+                var update = repository.Update(id, productUpdate);
+                var productResponse = mapper.Map<ProductResponse>(update);
+                return productResponse;
+            }
+                
+
+            
         }
     }
 }
