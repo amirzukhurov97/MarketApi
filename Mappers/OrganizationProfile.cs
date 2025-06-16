@@ -21,7 +21,8 @@ namespace MarketApi.Mappers
 
             CreateMap<Organization, OrganizationResponse>()
                 .ForMember(dest => dest.AddressName, opt => opt.MapFrom(src => src.Address.Name))
-                .ForMember(dest => dest.OrganizationTypeName, opt => opt.MapFrom(src => src.OrganizationType.Name));
+                .ForMember(dest => dest.OrganizationTypeName, opt => opt.MapFrom(src => src.OrganizationType.Name))
+                .ReverseMap();
         }
     }
 }

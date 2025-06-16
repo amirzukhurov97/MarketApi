@@ -71,7 +71,7 @@ namespace MarketApi.Services
             }
             return resDelete;
         }
-        public ProductResponse Update(Guid id, ProductUpdateRequest product)
+        public ProductResponse Update(Guid id, ProductResponse product)
         {
             if (product == null)
             {
@@ -85,13 +85,11 @@ namespace MarketApi.Services
             else
             {
                 var productUpdate = mapper.Map<Product>(product);
-                var update = repository.Update(id, productUpdate);
-                var productResponse = mapper.Map<ProductResponse>(update);
+                var update = repository.Update(productUpdate);
+                var products = repository.GetAll().Where(p => p.Id == id).Include(pc => pc.ProductCategory).Include(pm => pm.Measurement).ToList();
+                var productResponse = mapper.Map<ProductResponse>(products);
                 return productResponse;
-            }
-                
-
-            
+            }            
         }
     }
 }

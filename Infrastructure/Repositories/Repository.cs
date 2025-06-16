@@ -41,7 +41,6 @@ namespace MarketApi.Repositories
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -55,13 +54,13 @@ namespace MarketApi.Repositories
                 context.SaveChanges();
                 return entity;
             }
-            return null;
+            return entity;
 
         }
 
         public T Update(Guid id, T entity)
         {
-            var entityFromDb = GetById(id);
+            var entityFromDb = GetById(entity.Id);
             if (entityFromDb == null)
                 throw new Exception("Entity not found");
             entity.Id = id;

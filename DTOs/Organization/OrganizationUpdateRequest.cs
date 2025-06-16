@@ -1,8 +1,9 @@
-﻿namespace MarketApi.DTOs.Organization
+﻿using MarketApi.DTOs.EntityBase;
+
+namespace MarketApi.DTOs.Organization
 {
-    public record OrganizationUpdateRequest
+    public record OrganizationUpdateRequest : BaseProps
     {
-        public string? Name { get; set; }
         public string? PhoneNumber { get; set; }
         public Guid OrganizationTypeId { get; set; }
         public Guid AddressId { get; set; }

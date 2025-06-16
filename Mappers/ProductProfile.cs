@@ -19,7 +19,8 @@ namespace MarketApi.Mappers
 
             CreateMap<Product, ProductResponse>()
             .ForMember(dest => dest.MeasurementName, opt => opt.MapFrom(src => src.Measurement.Name))
-            .ForMember(dest => dest.ProductCategoryName, opt => opt.MapFrom(src => src.ProductCategory.Name));
+            .ForMember(dest => dest.ProductCategoryName, opt => opt.MapFrom(src => src.ProductCategory.Name))
+            .ReverseMap();
         }
     }
 }

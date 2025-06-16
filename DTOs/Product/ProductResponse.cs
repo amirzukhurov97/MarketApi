@@ -1,9 +1,10 @@
-﻿namespace MarketApi.DTOs.ProductDTOs
+﻿using MarketApi.DTOs.EntityBase;
+
+namespace MarketApi.DTOs.ProductDTOs
 {
-    public record ProductResponse
+    public record ProductResponse : BaseProps
     {
         public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
         public double Capacity { get; set; }
         public string Description { get; set; } = string.Empty;
         public string? MeasurementName { get; set; }

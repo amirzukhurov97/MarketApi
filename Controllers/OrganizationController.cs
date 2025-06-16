@@ -1,4 +1,4 @@
-﻿using MarketApi.DTOs.CustomerDTO;
+﻿
 using MarketApi.DTOs.Organization;
 using MarketApi.DTOs.OrganizationRequest;
 using MarketApi.Interfacies;

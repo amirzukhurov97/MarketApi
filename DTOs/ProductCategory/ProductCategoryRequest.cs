@@ -1,7 +1,8 @@
-﻿namespace MarketApi.DTOs.ProductCategory
+﻿using MarketApi.DTOs.EntityBase;
+
+namespace MarketApi.DTOs.ProductCategory
 {
-    public record ProductCategoryRequest
+    public record ProductCategoryRequest : BaseProps
     {
-        public string Name { get; set; } = string.Empty;
     }
 }

@@ -1,7 +1,8 @@
-﻿namespace MarketApi.DTOs.Measurement
+﻿using MarketApi.DTOs.EntityBase;
+
+namespace MarketApi.DTOs.Measurement
 {
-    public record MeasurementRequest
+    public record MeasurementRequest : BaseProps
     {
-        public string? Name { get; set; }
     }
 }

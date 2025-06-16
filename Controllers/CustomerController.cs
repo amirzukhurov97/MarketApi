@@ -1,4 +1,4 @@
-﻿using MarketApi.DTOs.CustomerDTO;
+﻿using MarketApi.DTOs.Customer;
 using MarketApi.DTOs.ProductDTOs;
 using MarketApi.Interfacies;
 using MarketApi.Models;
