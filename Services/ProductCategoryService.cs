@@ -1,5 +1,5 @@
 ﻿using MarketApi.DTOs.ProductCategory;
-using MarketApi.Interfacies;
+using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Models;
 
 namespace MarketApi.Services

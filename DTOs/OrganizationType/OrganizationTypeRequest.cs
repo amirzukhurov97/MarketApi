@@ -2,7 +2,7 @@
 
 namespace MarketApi.DTOs.OrganizationType
 {
-    public record OrganizationType : BaseProps
+    public record OrganizationTypeRequest : BaseProps
     {
     }
 }

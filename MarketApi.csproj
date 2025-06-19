@@ -24,4 +24,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MyServiceDefaults\MyServiceDefaults.csproj" />
+	  <PackageReference Include="Aspire.Hosting.Seq" Version="*" />
+  </ItemGroup>
+
 </Project>

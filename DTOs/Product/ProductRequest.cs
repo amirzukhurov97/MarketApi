@@ -1,6 +1,6 @@
 ﻿using MarketApi.DTOs.EntityBase;
 
-namespace MarketApi.DTOs.ProductDTOs
+namespace MarketApi.DTOs.Product
 {
     public record ProductRequest : BaseProps
     {

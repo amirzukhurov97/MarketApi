@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Azure;
-using MarketApi.DTOs.ProductDTOs;
-using MarketApi.Interfacies;
+using MarketApi.DTOs.Product;
+using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -71,7 +71,7 @@ namespace MarketApi.Services
             }
             return resDelete;
         }
-        public ProductResponse Update(Guid id, ProductResponse product)
+        public IEnumerable<ProductResponse> Update(Guid id, ProductUpdateRequest product)
         {
             if (product == null)
             {
@@ -85,9 +85,8 @@ namespace MarketApi.Services
             else
             {
                 var productUpdate = mapper.Map<Product>(product);
-                var update = repository.Update(productUpdate);
-                var products = repository.GetAll().Where(p => p.Id == id).Include(pc => pc.ProductCategory).Include(pm => pm.Measurement).ToList();
-                var productResponse = mapper.Map<ProductResponse>(products);
+                var update = repository.Update(id,productUpdate);
+                var productResponse = GetById(id);
                 return productResponse;
             }            
         }

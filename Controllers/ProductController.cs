@@ -1,5 +1,5 @@
 using AutoMapper;
-using MarketApi.DTOs.ProductDTOs;
+using MarketApi.DTOs.Product;
 using MarketApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;

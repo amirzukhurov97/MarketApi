@@ -1,6 +1,5 @@
 ﻿using MarketApi.DTOs.Customer;
-using MarketApi.DTOs.ProductDTOs;
-using MarketApi.Interfacies;
+using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -89,24 +88,24 @@ namespace MarketApi.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        [HttpPut]
-        public IActionResult Put(Guid id, CustomerRequest customer)
-        {
-            try
-            {
-                var product = new Customer
-                {
-                    Name = customer.Name,
-                    AddressId = customer.AddressId,
-                    PhoneNumber = customer.PhoneNumber
-                };
-                _repository.Update(id, product);
-                return Ok(product);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+        //[HttpPut]
+        //public IActionResult Put(CustomerRequest customer)
+        //{
+        //    try
+        //    {
+        //        var product = new Customer
+        //        {
+        //            Name = customer.Name,
+        //            AddressId = customer.AddressId,
+        //            PhoneNumber = customer.PhoneNumber
+        //        };
+        //        _repository.Update(product);
+        //        return Ok(product);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
     }
 }

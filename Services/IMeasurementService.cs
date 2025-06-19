@@ -1,5 +1,4 @@
 ﻿using MarketApi.DTOs.Measurement;
-using MarketApi.DTOs.ProductDTOs;
 using MarketApi.Models;
 
 namespace MarketApi.Services

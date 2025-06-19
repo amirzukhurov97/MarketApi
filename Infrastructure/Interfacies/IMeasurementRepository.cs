@@ -1,6 +1,6 @@
 ﻿using MarketApi.Models;
 
-namespace MarketApi.Interfacies
+namespace MarketApi.Infrastructure.Interfacies
 {
     public interface IMeasurementRepository : IRepository<Measurement>
     {

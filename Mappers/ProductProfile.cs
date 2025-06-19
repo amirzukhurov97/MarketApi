@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MarketApi.DTOs.ProductDTOs;
+using MarketApi.DTOs.Product;
 using MarketApi.Models;
 
 namespace MarketApi.Mappers

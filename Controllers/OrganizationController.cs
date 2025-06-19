@@ -1,7 +1,7 @@
 ﻿
 using MarketApi.DTOs.Organization;
 using MarketApi.DTOs.OrganizationRequest;
-using MarketApi.Interfacies;
+using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -89,24 +89,24 @@ namespace MarketApi.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        [HttpPut]
-        public IActionResult Put(Guid id, OrganizationUpdateRequest organization)
-        {
-            try
-            {
-                var organizationUpdate = new Organization
-                {
-                    Name = organization.Name,
-                    AddressId = organization.AddressId,
-                    PhoneNumber = organization.PhoneNumber
-                };
-                _repository.Update(id, organizationUpdate);
-                return Ok(organizationUpdate);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+        //[HttpPut]
+        //public IActionResult Put(Guid id, OrganizationUpdateRequest organization)
+        //{
+        //    try
+        //    {
+        //        var organizationUpdate = new Organization
+        //        {
+        //            Name = organization.Name,
+        //            AddressId = organization.AddressId,
+        //            PhoneNumber = organization.PhoneNumber
+        //        };
+        //        _repository.Update(organizationUpdate);
+        //        return Ok(organizationUpdate);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
     }
 }

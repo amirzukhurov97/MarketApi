@@ -1,5 +1,5 @@
 ﻿using MarketApi.Infrastructure.DataBase;
-using MarketApi.Interfacies;
+using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Models;
 using MarketApi.Repositories;
 

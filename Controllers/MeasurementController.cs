@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MarketApi.DTOs.Measurement;
-using MarketApi.DTOs.ProductDTOs;
 using MarketApi.Models;
 using MarketApi.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -10,11 +9,12 @@ namespace MarketApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class MeasurementController(IMeasurementService measurementService) : ControllerBase
+    public class MeasurementController(IMeasurementService measurementService, ILogger<MeasurementController> logger) : ControllerBase
     {
         [HttpGet]
         public IActionResult Get()
         {
+            logger.LogInformation("Fetching all Measurements from the database.");
             var _measurements = measurementService.GetAll();
             if (_measurements == null)
             {

@@ -1,5 +1,5 @@
 ﻿using MarketApi.DTOs.Measurement;
-using MarketApi.Interfacies;
+using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Models;
 
 namespace MarketApi.Services
@@ -33,17 +33,22 @@ namespace MarketApi.Services
             return repository.Remove(id);
         }
 
-        public Measurement Update(Guid id, MeasurementRequest measurementRequest)
+        public Measurement Update(Guid id, MeasurementRequest measurement)
         {
-
-            var measurement = new Measurement
-            {
-                Id = id,
-                Name = measurementRequest.Name ?? throw new ArgumentNullException(nameof(measurementRequest.Name), "Name cannot be null")
-            };
-            repository.Update(id, measurement);
-
-            return measurement;
+            throw new NotImplementedException();
         }
+
+        //public Measurement Update(Guid id, MeasurementRequest measurementRequest)
+        //{
+
+        //    var measurement = new Measurement
+        //    {
+        //        Id = id,
+        //        Name = measurementRequest.Name ?? throw new ArgumentNullException(nameof(measurementRequest.Name), "Name cannot be null")
+        //    };
+        //    repository.Update(measurement);
+
+        //    return measurement;
+        //}
     }
 }

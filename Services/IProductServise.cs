@@ -1,4 +1,4 @@
-﻿using MarketApi.DTOs.ProductDTOs;
+﻿using MarketApi.DTOs.Product;
 using MarketApi.Models;
 
 namespace MarketApi.Services
@@ -7,8 +7,8 @@ namespace MarketApi.Services
     {
         IEnumerable<ProductResponse> GetAll();
         IEnumerable<ProductResponse> GetById(Guid id);
-        Product Add(DTOs.ProductDTOs.ProductRequest product);
+        Product Add(ProductRequest product);
         Product Remove(Guid id);
-        ProductResponse Update(Guid id, ProductUpdateRequest product);
+        IEnumerable<ProductResponse> Update(Guid guid,ProductUpdateRequest product);
     }
 }

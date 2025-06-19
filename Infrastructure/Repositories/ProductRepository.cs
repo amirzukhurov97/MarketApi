@@ -1,6 +1,5 @@
-﻿using MarketApi.DTOs.ProductDTOs;
-using MarketApi.Infrastructure.DataBase;
-using MarketApi.Interfacies;
+﻿using MarketApi.Infrastructure.DataBase;
+using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Models;
 
 namespace MarketApi.Repositories

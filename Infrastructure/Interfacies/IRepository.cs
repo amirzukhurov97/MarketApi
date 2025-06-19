@@ -1,7 +1,7 @@
 ﻿using MarketApi.Models;
 using MarketApi.Models.Abstract;
 
-namespace MarketApi.Interfacies
+namespace MarketApi.Infrastructure.Interfacies
 {
     public interface IRepository<T> where T : class
     {        

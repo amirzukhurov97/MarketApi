@@ -1,5 +1,5 @@
 ﻿using MarketApi.Infrastructure.DataBase;
-using MarketApi.Interfacies;
+using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Models.Abstract;
 using Microsoft.EntityFrameworkCore;
 
@@ -60,10 +60,10 @@ namespace MarketApi.Repositories
 
         public T Update(Guid id, T entity)
         {
-            var entityFromDb = GetById(entity.Id);
+            var entityFromDb = GetById(id);
             if (entityFromDb == null)
                 throw new Exception("Entity not found");
-            entity.Id = id;
+            entity.Id = entityFromDb.Id;
             context.Entry(entityFromDb).CurrentValues.SetValues(entity);
             context.SaveChanges();
             return entityFromDb;
