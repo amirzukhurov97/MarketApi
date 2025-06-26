@@ -1,10 +1,11 @@
 ﻿using MarketApi.DTOs.EntityBase;
+using MarketApi.Models.Abstract.Entity;
 
 namespace MarketApi.DTOs.Product
 {
-    public record ProductResponse : BaseProps
+    public record ProductResponse : EntityBaseResponse
     {
-        public Guid Id { get; set; }
+        public string Name { get; set; }
         public double Capacity { get; set; }
         public string Description { get; set; } = string.Empty;
         public string? MeasurementName { get; set; }

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics.Metrics;
 using System.Text.Json.Serialization;
-using MarketApi.Models.Abstract;
+using MarketApi.Models.Abstract.Entity;
 
 namespace MarketApi.Models
 {

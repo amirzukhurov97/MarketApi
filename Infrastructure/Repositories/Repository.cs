@@ -1,43 +1,27 @@
 ﻿using MarketApi.Infrastructure.DataBase;
 using MarketApi.Infrastructure.Interfacies;
-using MarketApi.Models.Abstract;
+using MarketApi.Models.Abstract.Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarketApi.Repositories
 {
-    public class Repository<T>(ApplicationDbContext context) : IRepository<T> where T : EntityBase
+    public abstract class Repository<T> : IRepository<T> where T : EntityBase
     {
-        public T Add(T entity)
+        protected readonly ApplicationDbContext _context;
+        protected readonly DbSet<T> _dbSet;
+        public Repository(ApplicationDbContext context)
         {
-            try
-            {
-                context.Add(entity);
-                context.SaveChanges();  
-                return entity;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            _context = context;
+            _dbSet = context.Set<T>();
         }
 
-        public IQueryable<T> GetAll()
+        public T Add(T item)
         {
             try
             {
-                return context.Set<T>().AsQueryable();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public T GetById(Guid id)
-        {
-            try
-            {
-                return context.Find<T>(id);
+                _dbSet.Add(item);
+                _context.SaveChanges();
+                return item;
             }
             catch (Exception)
             {
@@ -45,29 +29,64 @@ namespace MarketApi.Repositories
             }
         }
 
-        public T Remove(Guid id)
+        public virtual IQueryable<T> GetAll()
         {
-            var entity = GetById(id);
-            if (entity != null) 
+            try
             {
-                context.Remove(entity);
-                context.SaveChanges();
-                return entity;
+                return _dbSet.AsQueryable();
             }
-            return entity;
-
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public T Update(Guid id, T entity)
+        public IQueryable<T> GetById(Guid id)
         {
-            var entityFromDb = GetById(id);
-            if (entityFromDb == null)
-                throw new Exception("Entity not found");
-            entity.Id = entityFromDb.Id;
-            context.Entry(entityFromDb).CurrentValues.SetValues(entity);
-            context.SaveChanges();
-            return entityFromDb;
+            try
+            {
+                return _dbSet.AsQueryable();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
+        public bool Remove(Guid id)
+        {
+            try
+            {
+                var item = GetById(id).ToList();
+                _dbSet.Remove(item[0]);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool Update(T item)
+        {
+            try
+            {
+                var itemResult = GetById(item.Id);
+
+                _context.Entry(itemResult).State = EntityState.Detached;
+                item.Id = item.Id;
+                _context.Entry(item).State = EntityState.Modified;
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

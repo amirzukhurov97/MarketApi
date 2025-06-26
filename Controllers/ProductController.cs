@@ -1,14 +1,16 @@
 using AutoMapper;
+using k8s.Models;
 using MarketApi.DTOs.Product;
 using MarketApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Serilog;
 
 namespace MarketApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductController(IProductServise productServise, ILogger<ProductController> logger) : ControllerBase
+    public class ProductController(IGenericService<ProductRequest, ProductUpdateRequest, ProductResponse> productServise, ILogger<ProductController> logger) : ControllerBase
     {
 
         [HttpGet]
@@ -16,46 +18,63 @@ namespace MarketApi.Controllers
         {
             try
             {
-                logger.LogInformation("Fetching all products from the database.");
-                var productList = productServise.GetAll();                
-                return Ok(productList);
+                
+                return Ok(productServise.GetAll());
+            }
+            catch (SqlException ex)
+            {
+                Log.Error("SQL Error in Create method: {@ex}", ex);
+                return StatusCode(500, $"Database error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred while fetching products.");
-                throw new Exception(ex.Message);
+                Log.Error("Exception in Create method: {@ex}", ex);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-            
+
         }
         [HttpGet("{id:Guid}")]
         public IActionResult GetById(Guid id)
         {
             try
             {
-                logger.LogInformation($"Fetching product with ID: {id} from the database.");
-                var productResponse = productServise.GetById(id);                
-                return Ok(productResponse);
+                var getById = productServise.GetById(id);
+                if (getById is null)
+                    return Ok("You have not data");
+                Log.Information("In the method GetById result=>{@getById}", getById);
+                return Ok(getById);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error("SQL Error in GetById method: {@ex}", ex);
+                return StatusCode(500, $"Database error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"An error occurred while fetching product with ID: {id}.");
-                throw new Exception(ex.Message);
-            }            
+                Log.Error("Exception in GetById method: {@ex}", ex);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPost]
-        public IActionResult Post(ProductRequest productRequest)
-        {
+        public ActionResult<string> Create(ProductRequest productRequest) {
             try
             {
-                logger.LogInformation("Adding a new product to the database.");
-                productServise.Add(productRequest);
-                return Created("", productRequest);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                Log.Information("In the method Create request => {@request}", productRequest);
+                return productServise.Create(productRequest);
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                logger.LogError(ex, "An error occurred while adding a new product.");
-                throw new Exception(ex.Message);
+                Log.Error("SQL Error in Create method: {@ex}", ex);
+                return StatusCode(500, $"Database error: {ex.Message}");
+            }
+            catch (Exception ex) {
+                Log.Error("Exception in Create method: {@ex}", ex);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
@@ -76,17 +95,17 @@ namespace MarketApi.Controllers
             }        
         }
         [HttpPut]
-        public IActionResult Put(Guid id, ProductUpdateRequest productUpdate) 
+        public IActionResult Put(ProductUpdateRequest productUpdate) 
         {
             try
-            {        
-                logger.LogInformation($"Updating product with ID: {id} in the database.");
-                var product = productServise.Update(id, productUpdate);
+            {
+                logger.LogInformation($"Updating product with ID: {productUpdate.Id} in the database.");
+                var product = productServise.Update(productUpdate);
                 return Ok(product);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"An error occurred while updating product with ID: {id}.");
+                logger.LogError(ex, $"An error occurred while updating product with ID: {productUpdate.Id}.");
                 throw new Exception(ex.Message);
             }
         }

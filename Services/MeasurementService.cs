@@ -25,12 +25,13 @@ namespace MarketApi.Services
 
         public Measurement GetById(Guid id)
         {
-            return repository.GetById(id);
+            return null;
         }
 
         public Measurement Remove(Guid id)
         {
-            return repository.Remove(id);
+            throw new NotImplementedException();
+            //return repository.Remove(id);
         }
 
         public Measurement Update(Guid id, MeasurementRequest measurement)
