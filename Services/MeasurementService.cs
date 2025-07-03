@@ -1,55 +1,102 @@
-﻿using MarketApi.DTOs.Measurement;
+﻿using AutoMapper;
+using MarketApi.DTOs.Measurement;
+using MarketApi.DTOs.Product;
 using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace MarketApi.Services
 {
-    public class MeasurementService(IMeasurementRepository repository) : IMeasurementService
+    public class MeasurementService(IMeasurementRepository repository, IMapper mapper) : IGenericService<MeasurementRequest, MeasurementUpdateRequest, MeasurementResponse>
     {
-        public Measurement Add(MeasurementRequest measurementRequest)
+        public string Create(MeasurementRequest item)
         {
-            var measurement = new Measurement
+            if (string.IsNullOrEmpty(item.Name))
             {
-                Id = Guid.NewGuid(),
-                Name = measurementRequest.Name ?? throw new ArgumentNullException(nameof(measurementRequest.Name), "Name cannot be null")
-            };
-            repository.Add(measurement);
-            return measurement;
+                return "The name cannot be empty";
+            }
+            else
+            {
+                var mapToEntity = mapper.Map<Measurement>(item);
+                repository.Add(mapToEntity);
+                return $"Created new item with this ID: {mapToEntity.Id}";
+            }
         }
 
-        public IEnumerable<Measurement> GetAll()
+        public IEnumerable<MeasurementResponse> GetAll()
         {
-            var result = repository.GetAll().ToList();
-            return result;
+            try
+            {
+                List<MeasurementResponse>? responses = new List<MeasurementResponse>();
+                var measurements = repository.GetAll().ToList();
+                if (measurements.Count > 0)
+                {
+                    foreach (var measurement in measurements)
+                    {
+                        var response = mapper.Map<MeasurementResponse>(measurement);
+                        responses.Add(response);
+                    }
+                }
+                else
+                {
+                    throw new Exception("No measurements found.");
+                }
+                return responses;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Measurement GetById(Guid id)
+        public MeasurementResponse GetById(Guid id)
         {
-            return null;
+            try
+            {
+                MeasurementResponse responses = null;
+                var productResponse = repository.GetById(id).ToList();
+                if (productResponse.Count > 0)
+                {
+                    responses = mapper.Map<MeasurementResponse>(productResponse[0]);
+                }
+                return responses;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
-        public Measurement Remove(Guid id)
+        public string Remove(Guid id)
         {
-            throw new NotImplementedException();
-            //return repository.Remove(id);
+            var _item = repository.GetById(id);
+            if (_item is null)
+            {
+                return "Measurement is not found";
+            }
+            repository.Remove(id);
+
+            return "Measurement is deleted";
         }
 
-        public Measurement Update(Guid id, MeasurementRequest measurement)
+        public string Update(MeasurementUpdateRequest item)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var _item = repository.GetById(item.Id).ToList();
+                if (_item is null)
+                {
+                    return "Measurement is not found";
+                }
+                var mapMeasurement = mapper.Map<Measurement>(item);
+                repository.Update(mapMeasurement);
+                return "Measurement is updated";
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
-
-        //public Measurement Update(Guid id, MeasurementRequest measurementRequest)
-        //{
-
-        //    var measurement = new Measurement
-        //    {
-        //        Id = id,
-        //        Name = measurementRequest.Name ?? throw new ArgumentNullException(nameof(measurementRequest.Name), "Name cannot be null")
-        //    };
-        //    repository.Update(measurement);
-
-        //    return measurement;
-        //}
     }
 }

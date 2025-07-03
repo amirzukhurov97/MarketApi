@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MarketApi.DTOs.Organization;
-using MarketApi.DTOs.OrganizationRequest;
 using MarketApi.Models;
 
 namespace MarketApi.Mappers

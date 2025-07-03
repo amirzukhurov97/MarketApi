@@ -4,7 +4,6 @@ namespace MarketApi.Models.Abstract
 {
     public abstract class ProductBase : EntityBase
     {
-
         public decimal Price { get; set; }
         public decimal PriceUSD { get; set; }
         public double Quantity { get; set; }

@@ -1,5 +1,3 @@
-using AutoMapper;
-using k8s.Models;
 using MarketApi.DTOs.Product;
 using MarketApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +16,13 @@ namespace MarketApi.Controllers
         {
             try
             {
-                
-                return Ok(productServise.GetAll());
+                var products = productServise.GetAll();
+                if (products is null || !products.Any())
+                {
+                    return NotFound("No products found.");
+                }
+                return Ok(products);
+
             }
             catch (SqlException ex)
             {
@@ -31,7 +34,6 @@ namespace MarketApi.Controllers
                 Log.Error("Exception in Create method: {@ex}", ex);
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-
         }
         [HttpGet("{id:Guid}")]
         public IActionResult GetById(Guid id)
@@ -40,7 +42,7 @@ namespace MarketApi.Controllers
             {
                 var getById = productServise.GetById(id);
                 if (getById is null)
-                    return Ok("You have not data");
+                    return NotFound("You have not data");
                 Log.Information("In the method GetById result=>{@getById}", getById);
                 return Ok(getById);
             }

@@ -80,6 +80,25 @@ namespace MarketApi.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("MarketApi.Models.Market", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Quantity")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Markets");
+                });
+
             modelBuilder.Entity("MarketApi.Models.Measurement", b =>
                 {
                     b.Property<Guid>("Id")
@@ -391,6 +410,17 @@ namespace MarketApi.Migrations
                         .IsRequired();
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("MarketApi.Models.Market", b =>
+                {
+                    b.HasOne("MarketApi.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("MarketApi.Models.Organization", b =>

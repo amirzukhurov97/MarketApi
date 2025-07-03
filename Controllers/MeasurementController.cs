@@ -1,33 +1,65 @@
 ﻿using AutoMapper;
 using MarketApi.DTOs.Measurement;
+using MarketApi.DTOs.Product;
 using MarketApi.Models;
 using MarketApi.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Serilog;
 
 namespace MarketApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class MeasurementController(IMeasurementService measurementService, ILogger<MeasurementController> logger) : ControllerBase
+    public class MeasurementController(IGenericService<MeasurementRequest, MeasurementUpdateRequest, MeasurementResponse> measurementService, ILogger<ProductController> logger) : ControllerBase
     {
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAll()
         {
-            logger.LogInformation("Fetching all Measurements from the database.");
-            var _measurements = measurementService.GetAll();
-            if (_measurements == null)
+            try
             {
-                return Ok("Don't have elements");
+                var measurements = measurementService.GetAll();
+                if (measurements is null || !measurements.Any())
+                {
+                    return NotFound("No measurements found.");
+                }
+                return Ok(measurements);
             }
-            return Ok(_measurements);
+            catch (SqlException ex)
+            {
+                Log.Error("SQL Error in Create method: {@ex}", ex);
+                return StatusCode(500, $"Database error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Exception in Create method: {@ex}", ex);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPost]
-        public IActionResult Post(MeasurementRequest measurementRequest)
+        public ActionResult<string> Create(MeasurementRequest measurementRequest)
         {
-            var measurement= measurementService.Add(measurementRequest);
-            return Ok(measurement);
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                Log.Information("In the method Create request => {@request}", measurementRequest);
+                return measurementService.Create(measurementRequest);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error("SQL Error in Create method: {@ex}", ex);
+                return StatusCode(500, $"Database error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Exception in Create method: {@ex}", ex);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpGet("{id:Guid}")]
@@ -35,18 +67,22 @@ namespace MarketApi.Controllers
         {
             try
             {
-                var measurementList = measurementService.GetById(id);
-                if (measurementList == null)
-                {
-                    return BadRequest($"With id ={id} Don't have measurements");
-                }
-                return Ok(measurementList);
+                var getById = measurementService.GetById(id);
+                if (getById is null)
+                    return NotFound($"No elements by id {id}");
+                Log.Information("In the method GetById result=>{@getById}", getById);
+                return Ok(getById);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error("SQL Error in GetById method: {@ex}", ex);
+                return StatusCode(500, $"Database error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                Log.Error("Exception in GetById method: {@ex}", ex);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-
         }
 
         [HttpDelete]
@@ -54,30 +90,29 @@ namespace MarketApi.Controllers
         {
             try
             {
+                logger.LogInformation($"Deleting measurement with ID: {id} from the database.");
                 var resDel = measurementService.Remove(id);
-                if (resDel == null)
-                {
-                    return BadRequest();
-                }
                 return Ok(resDel);
 
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, $"An error occurred while deleting measurement with ID: {id}.");
                 throw new Exception(ex.Message);
             }
         }
         [HttpPut]
-        public IActionResult Put(Guid id, MeasurementRequest measurementUpdate, [FromServices] IMapper mapper)
+        public IActionResult Put(MeasurementUpdateRequest measurementUpdate, [FromServices] IMapper mapper)
         {
             try
             {
-
-                var measurement = measurementService.Update(id, measurementUpdate);
-                return Ok(measurement);
+                logger.LogInformation($"Updating measurement with ID: {measurementUpdate.Id} in the database.");
+                var product = measurementService.Update(measurementUpdate);
+                return Ok(product);
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, $"An error occurred while updating measurement with ID: {measurementUpdate.Id}.");
                 throw new Exception(ex.Message);
             }
         }

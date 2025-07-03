@@ -1,47 +1,102 @@
-﻿using MarketApi.DTOs.ProductCategory;
+﻿using AutoMapper;
+using MarketApi.DTOs.Product;
+using MarketApi.DTOs.ProductCategory;
 using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace MarketApi.Services
 {
-    public class ProductCategoryService(IProductCategoryRepository repository) : IProductCategoryService
+    public class ProductCategoryService(IProductCategoryRepository repository, IMapper mapper) : IGenericService<ProductCategoryRequest, ProductCategoryUpdateRequest, ProductCategoryResponse>
     {
-        public ProductCategory Add(ProductCategoryRequest productCategoryRequest)
+        public string Create(ProductCategoryRequest item)
         {
-            if (productCategoryRequest == null)
+            if (string.IsNullOrEmpty(item.Name))
             {
-                throw new ArgumentNullException(nameof(productCategoryRequest), "ProductCategoryRequest cannot be null");
+                return "The name cannot be empty";
             }
-            var productCategory = new ProductCategory
+            else
             {
-                Id = Guid.NewGuid(),
-                Name = productCategoryRequest.Name ?? throw new ArgumentNullException(nameof(productCategoryRequest.Name), "Name cannot be null")
-            };
-            // Here you would typically call a repository to save the product category
-            repository.Add(productCategory);
-            return productCategory;
-
+                var mapProductCategory = mapper.Map<ProductCategory>(item);
+                repository.Add(mapProductCategory);
+                return $"Created new item with this ID: {mapProductCategory.Id}";
+            }
         }
 
-        public IEnumerable<ProductCategory> GetAll()
+        public IEnumerable<ProductCategoryResponse> GetAll()
         {
-            var result = repository.GetAll().ToList();
-            return result;
+            try
+            {
+                List<ProductCategoryResponse>? responses = new List<ProductCategoryResponse>();
+                var productCategories = repository.GetAll().ToList();
+                if (productCategories.Count > 0)
+                {
+                    foreach (var product in productCategories)
+                    {
+                        var response = mapper.Map<ProductCategoryResponse>(product);
+                        responses.Add(response);
+                    }
+                }
+                else
+                {
+                    throw new Exception("No productCategories found.");
+                }
+                return responses;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public ProductCategory GetById(Guid id)
+        public ProductCategoryResponse GetById(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                ProductCategoryResponse responses = null;
+                var productResponse = repository.GetById(id).ToList();
+                if (productResponse.Count > 0)
+                {
+                    responses = mapper.Map<ProductCategoryResponse>(productResponse[0]);
+                }
+                return responses;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
-        public ProductCategory Remove(Guid id)
+        public string Remove(Guid id)
         {
-            throw new NotImplementedException();
+            var _item = repository.GetById(id);
+            if (_item is null)
+            {
+                return "ProductCategory is not found";
+            }
+            repository.Remove(id);
+
+            return "ProductCategory is deleted";
         }
 
-        public ProductCategory Update(Guid id, ProductCategoryRequest measurement)
+        public string Update(ProductCategoryUpdateRequest item)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var _item = repository.GetById(item.Id).ToList();
+                if (_item is null)
+                {
+                    return "ProductCategory is not found";
+                }
+                var mapProduct = mapper.Map<ProductCategory>(item);
+                repository.Update(mapProduct);
+                return "ProductCategory is updated";
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

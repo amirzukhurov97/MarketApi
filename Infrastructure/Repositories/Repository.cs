@@ -45,7 +45,7 @@ namespace MarketApi.Repositories
         {
             try
             {
-                return _dbSet.AsQueryable();
+                return _dbSet.Where(i=>i.Id==id).AsQueryable();
             }
             catch (Exception)
             {
@@ -73,11 +73,9 @@ namespace MarketApi.Repositories
         {
             try
             {
-                var itemResult = GetById(item.Id);
-
+                var itemResult = _dbSet.Local.FirstOrDefault(i=>i.Id==item.Id);    
                 _context.Entry(itemResult).State = EntityState.Detached;
-                item.Id = item.Id;
-                _context.Entry(item).State = EntityState.Modified;
+                _context.Update(item);
                 _context.SaveChanges();
 
                 return true;

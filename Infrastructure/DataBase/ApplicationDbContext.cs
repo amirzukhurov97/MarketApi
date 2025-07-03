@@ -20,9 +20,10 @@ namespace MarketApi.Infrastructure.DataBase
         public DbSet<Address> Addresses { get; set; } = null!;
         public DbSet<CurrencyExchange> CurrencyExchange { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Market> Markets { get; set; } = null!;
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            //Database.EnsureCreated();
+            
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

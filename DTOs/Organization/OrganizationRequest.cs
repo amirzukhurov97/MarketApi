@@ -1,10 +1,12 @@
 ﻿using MarketApi.DTOs.EntityBase;
 using MarketApi.Models;
+using MarketApi.Models.Abstract.Entity;
 
-namespace MarketApi.DTOs.OrganizationRequest
+namespace MarketApi.DTOs.Organization
 {
-    public record OrganizationRequest : BaseProps
+    public record OrganizationRequest : EntityBaseRequest
     {
+        public string Name { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
         public Guid OrganizationTypeId { get; set; }
         public Guid AddressId { get; set; }

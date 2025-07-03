@@ -1,36 +1,42 @@
 ﻿using MarketApi.DTOs.Customer;
+using MarketApi.DTOs.Measurement;
 using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Models;
+using MarketApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Serilog;
 
 namespace MarketApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
-    {
-        private readonly IRepository<Customer> _repository;
-        public CustomerController(IRepository<Customer> repository)
-        {
-            _repository = repository;
-        }
+    public class CustomerController(IGenericService<CustomerRequest, CustomerUpdateRequest, CustomerResponse> customerService, ILogger<ProductController> logger) : ControllerBase
+    {        
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAll()
         {
             try
             {
-                var сustomerList = _repository.GetAll();
-                if (сustomerList == null || !сustomerList.Any())
+                var customers = customerService.GetAll();
+                if (customers is null || !customers.Any())
                 {
-                    return BadRequest("Don't have customers");
+                    return NotFound("No customers found.");
                 }
-                return Ok(сustomerList);
+                return Ok(customers);
+
+            }
+            catch (SqlException ex)
+            {
+                Log.Error("SQL Error in Create method: {@ex}", ex);
+                return StatusCode(500, $"Database error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                Log.Error("Exception in Create method: {@ex}", ex);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
 
         }
@@ -39,31 +45,47 @@ namespace MarketApi.Controllers
         {
             try
             {
-                var сustomerList = _repository.GetById(id);
-                if (сustomerList == null)
-                {
-                    return BadRequest($"With id ={id} Don't have customers");
-                }
-                return Ok(сustomerList);
+                var getById = customerService.GetById(id);
+                if (getById is null)
+                    return NotFound($"No elements by id {id}");
+                Log.Information("In the method GetById result=>{@getById}", getById);
+                return Ok(getById);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error("SQL Error in GetById method: {@ex}", ex);
+                return StatusCode(500, $"Database error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                Log.Error("Exception in GetById method: {@ex}", ex);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
 
         }
 
         [HttpPost]
-        public IActionResult Post(CustomerRequest customer)
+        public ActionResult<string> Create(CustomerRequest customerRequest)
         {
-            var product = new Customer
+            try
             {
-                Name = customer.Name,
-                AddressId = customer.AddressId,
-                PhoneNumber = customer.PhoneNumber
-            };
-            _repository.Add(product);
-            return Created("", product);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                Log.Information("In the method Create request => {@request}", customerRequest);
+                return customerService.Create(customerRequest);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error("SQL Error in Create method: {@ex}", ex);
+                return StatusCode(500, $"Database error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Exception in Create method: {@ex}", ex);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpDelete]
@@ -71,41 +93,31 @@ namespace MarketApi.Controllers
         {
             try
             {
-                var deleteCustomer = _repository.GetById(id);
-                if (deleteCustomer != null)
-                {
-                    _repository.Remove(deleteCustomer.Id);
-                    return Ok(deleteCustomer);
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                logger.LogInformation($"Deleting customer with ID: {id} from the database.");
+                var resDel = customerService.Remove(id);
+                return Ok(resDel);
 
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, $"An error occurred while deleting customer with ID: {id}.");
                 throw new Exception(ex.Message);
             }
         }
-        //[HttpPut]
-        //public IActionResult Put(CustomerRequest customer)
-        //{
-        //    try
-        //    {
-        //        var product = new Customer
-        //        {
-        //            Name = customer.Name,
-        //            AddressId = customer.AddressId,
-        //            PhoneNumber = customer.PhoneNumber
-        //        };
-        //        _repository.Update(product);
-        //        return Ok(product);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception(ex.Message);
-        //    }
-        //}
+        [HttpPut]
+        public IActionResult Put(CustomerUpdateRequest customerUpdate)
+        {
+            try
+            {
+                logger.LogInformation($"Updating customer with ID: {customerUpdate.Id} in the database.");
+                var product = customerService.Update(customerUpdate);
+                return Ok(product);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"An error occurred while updating customer with ID: {customerUpdate.Id}.");
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
