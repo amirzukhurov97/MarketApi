@@ -9,7 +9,7 @@ namespace MarketApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class MarketController(IGenericService<MarketRequest, MarketUpdateRequest, MarketResponse> service, ILogger<MarketController> logger) : ControllerBase
+    public class MarketController(MarketService service, ILogger<MarketController> logger) : ControllerBase
     {
         [HttpGet]
         public IActionResult GetAll()

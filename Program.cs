@@ -1,3 +1,4 @@
+using FluentValidation;
 using MarketApi.DTOs.Address;
 using MarketApi.DTOs.CurrencyExchange;
 using MarketApi.DTOs.Customer;
@@ -8,6 +9,8 @@ using MarketApi.DTOs.OrganizationType;
 using MarketApi.DTOs.Product;
 using MarketApi.DTOs.ProductCategory;
 using MarketApi.DTOs.Purchase;
+using MarketApi.DTOs.Sale;
+using MarketApi.FluentValidation;
 using MarketApi.Infrastructure.DataBase;
 using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Infrastructure.Repositories;
@@ -43,6 +46,7 @@ builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IOrganizationTypeRepository, OrganizationTypeRepository>();
 builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<ICurrencyExchangeRepository, CurrencyExchangeRepository>();
 builder.Services.AddScoped<IMarketRopository, MarketRepository>();
 
@@ -54,8 +58,9 @@ builder.Services.AddScoped<IGenericService<AddressRequest, AddressUpdateRequest,
 builder.Services.AddScoped<IGenericService<OrganizationRequest, OrganizationUpdateRequest, OrganizationResponse>, OrganizationService>();
 builder.Services.AddScoped<IGenericService<OrganizationTypeRequest, OrganizationTypeUpdateRequest, OrganizationTypeResponse>, OrganizationTypeService>();
 builder.Services.AddScoped<IGenericService<PurchaseRequest, PurchaseUpdateRequest, PurchaseResponse>, PurchaseService>();
+builder.Services.AddScoped<IGenericService<SaleRequest, SaleUpdateRequest, SaleResponse>, SaleService>();
 builder.Services.AddScoped<IGenericService<CurrencyExchangeRequest, CurrencyExchangeUpdateRequest, CurrencyExchangeResponse>, CurrencyExchangeService>();
-builder.Services.AddScoped<IGenericService<MarketRequest, MarketUpdateRequest, MarketResponse>, MarketService>();
+builder.Services.AddScoped<MarketService>();
 
 builder.Services.AddAutoMapper(op =>
 {
@@ -73,6 +78,8 @@ builder.Services.AddAutoMapper(op =>
     op.AddMaps(typeof(CurrencyExchangeProfile).Assembly);
     op.AddMaps(typeof(MarketProfile).Assembly);
 });
+builder.Services.AddValidatorsFromAssemblyContaining<PurchaseRequestValidator>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

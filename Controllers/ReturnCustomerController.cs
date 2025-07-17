@@ -1,5 +1,6 @@
 ﻿using MarketApi.DTOs.Product;
 using MarketApi.DTOs.Purchase;
+using MarketApi.DTOs.ReturnCustomer;
 using MarketApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -9,10 +10,10 @@ namespace MarketApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PurchaseController(IGenericService<PurchaseRequest, PurchaseUpdateRequest, PurchaseResponse> service, ILogger<PurchaseController> logger) : ControllerBase
+    public class ReturnCustomerController(IGenericService<ReturnCustomerRequest, ReturnCustomerUpdateRequest, ReturnCustomerResponse> service, ILogger<ReturnCustomerController> logger) : ControllerBase
     {
         [HttpPost]
-        public ActionResult<string> Create([FromBody]PurchaseRequest productRequest)
+        public ActionResult<string> Create([FromBody] ReturnCustomerRequest productRequest)
         {
             try
             {                
@@ -97,7 +98,7 @@ namespace MarketApi.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody]PurchaseUpdateRequest purchaseUpdate)
+        public IActionResult Put([FromBody] ReturnCustomerUpdateRequest purchaseUpdate)
         {
             try
             {

@@ -32,4 +32,8 @@
 	  <PackageReference Include="Aspire.Hosting.Seq" Version="*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Market.Application\Market.Application.csproj" />
+  </ItemGroup>
+
 </Project>

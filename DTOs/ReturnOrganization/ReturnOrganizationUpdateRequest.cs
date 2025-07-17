@@ -1,9 +1,8 @@
-﻿using MarketApi.DTOs.EntityBase;
-using MarketApi.Models.Abstract.Entity;
+﻿using MarketApi.Models.Abstract.Entity;
 
-namespace MarketApi.DTOs.ReturnCustomer
+namespace MarketApi.DTOs.ReturnOrganization
 {
-    public record ReturnCustomerRequest : EntityBaseRequest
+    public record ReturnOrganizationUpdateRequest : EntityBaseUpdateRequest
     {
         public decimal Price { get; set; }
         public decimal PriceUSD { get; set; }
@@ -13,6 +12,6 @@ namespace MarketApi.DTOs.ReturnCustomer
         public DateTime Date { get; set; }
         public string? Comment { get; set; }
         public Guid ProductId { get; set; }
-        public Guid CustomerId { get; set; }
+        public Guid OrganizationId { get; set; }
     }
 }

@@ -8,21 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MarketApi.Services
 {
-    public class MarketService(IMarketRopository repository, IMapper mapper) : IGenericService<MarketRequest, MarketUpdateRequest, MarketResponse>
+    public class MarketService(IMarketRopository repository, IMapper mapper)
     {
-        public string Create(MarketRequest item)
-        {
-            if (item?.ProductId == null)
-            {
-                return "ProductName cannot be empty";
-            }
-            else
-            {
-                var mapMarket = mapper.Map<Market>(item);
-                repository.Add(mapMarket);
-                return $"Created new item with this ID: {mapMarket.Id}";
-            }
-        }
 
         public IEnumerable<MarketResponse> GetAll()
         {
@@ -39,35 +26,6 @@ namespace MarketApi.Services
                     }
                 }
                 return responses;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public MarketResponse GetById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Remove(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Update(MarketUpdateRequest item)
-        {
-            try
-            {
-                var _item = repository.GetById(item.Id).ToList();
-                if (_item is null)
-                {
-                    return "Product is not found";
-                }
-                var mapMarket = mapper.Map<Market>(item);
-                repository.Update(mapMarket);
-                return "Market is updated";
             }
             catch (Exception)
             {

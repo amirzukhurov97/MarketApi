@@ -52,16 +52,15 @@ namespace MarketApi.Services
             try
             {
                 ProductResponse responses = null;
-                var productResponse = repository.GetById(id).Include(pc => pc.ProductCategory).Include(pm => pm.Measurement).ToList();
-                if (productResponse.Count >0)
+                var productResponse = repository.GetById(id).Include(pc => pc.ProductCategory).Include(pm => pm.Measurement).FirstOrDefault();
+                if (productResponse !=null)
                 {
-                    responses = mapper.Map<ProductResponse>(productResponse[0]);
+                    responses = mapper.Map<ProductResponse>(productResponse);
                 }
                 return responses;
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -82,7 +81,7 @@ namespace MarketApi.Services
         {
             try
             {
-                var _item = repository.GetById(item.Id).ToList();
+                var _item = repository.GetById(item.Id).FirstOrDefault();
                 if (_item is null)
                 {
                     return "Product is not found";

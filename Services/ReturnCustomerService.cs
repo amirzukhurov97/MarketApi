@@ -1,50 +1,49 @@
 ﻿using AutoMapper;
 using MarketApi.DTOs.Purchase;
-using MarketApi.DTOs.Sale;
+using MarketApi.DTOs.ReturnCustomer;
 using MarketApi.Infrastructure.Interfacies;
 using MarketApi.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarketApi.Services
 {
-    public class PurchaseService(IPurchaseRepository repository, IMarketRopository marketRopository, IMapper mapper) : IGenericService<PurchaseRequest, PurchaseUpdateRequest, PurchaseResponse>
+    public class ReturnCustomerService(IReturnCustomerRepository repository, IMarketRopository marketRopository, IMapper mapper) : IGenericService<ReturnCustomerRequest, ReturnCustomerUpdateRequest, ReturnCustomerResponse>
     {
-        public string Create(PurchaseRequest item)
+        public string Create(ReturnCustomerRequest item)
         {
             try
-            {                
-                 item.SumPrice = item.Price * Convert.ToDecimal(item.Quantity);
-                    item.SumPriceUSD = item.PriceUSD * Convert.ToDecimal(item.Quantity);
-                    var mapQuantity = mapper.Map<Purchase>(item);
-                    
-                    var marketItem = new Market
-                    {
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity
-                    };
-                    var marketResponse = marketRopository.Income(marketItem);
-                    repository.Add(mapQuantity);
-                return $"Created new newItem with this ID: {mapQuantity.Id}";   
-                
+            {
+                item.SumPrice = item.Price * Convert.ToDecimal(item.Quantity);
+                item.SumPriceUSD = item.PriceUSD * Convert.ToDecimal(item.Quantity);
+                var mapQuantity = mapper.Map<ReturnCustomer>(item);
+
+                var marketItem = new Market
+                {
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity
+                };
+                var marketResponse = marketRopository.Income(marketItem);
+                repository.Add(mapQuantity);
+                return $"Created new newItem with this ID: {mapQuantity.Id}";
+
             }
             catch (Exception)
             {
                 throw;
             }
-            
         }
 
-        public IEnumerable<PurchaseResponse> GetAll()
+        public IEnumerable<ReturnCustomerResponse> GetAll()
         {
             try
             {
-                List<PurchaseResponse>? responses = new List<PurchaseResponse>();
-                var purchases = repository.GetAll().Include(pc => pc.Product).Include(pm => pm.Organization).ToList();
+                List<ReturnCustomerResponse>? responses = new List<ReturnCustomerResponse>();
+                var purchases = repository.GetAll().Include(pc => pc.Product).Include(pm => pm.Customer).ToList();
                 if (purchases.Count > 0)
                 {
                     foreach (var purchase in purchases)
                     {
-                        var response = mapper.Map<PurchaseResponse>(purchase);
+                        var response = mapper.Map<ReturnCustomerResponse>(purchase);
                         responses.Add(response);
                     }
                 }
@@ -56,15 +55,15 @@ namespace MarketApi.Services
             }
         }
 
-        public PurchaseResponse GetById(Guid id)
+        public ReturnCustomerResponse GetById(Guid id)
         {
             try
             {
-                PurchaseResponse responses = null;
-                var purchaseList = repository.GetById(id).Include(pc => pc.Product).Include(pm => pm.Organization).FirstOrDefault();
+                ReturnCustomerResponse responses = null;
+                var purchaseList = repository.GetById(id).Include(pc => pc.Product).Include(pm => pm.Customer).FirstOrDefault();
                 if (purchaseList != null)
                 {
-                    responses = mapper.Map<PurchaseResponse>(purchaseList);
+                    responses = mapper.Map<ReturnCustomerResponse>(purchaseList);
                 }
                 return responses;
             }
@@ -81,7 +80,7 @@ namespace MarketApi.Services
                 var _item = repository.GetById(id).FirstOrDefault();
                 if (_item is null)
                 {
-                    return "Purchase is not found";
+                    return "ReturnCustomer is not found";
                 }
                 if (_item.Quantity > 0)
                 {
@@ -93,7 +92,7 @@ namespace MarketApi.Services
                     marketRopository.Expense(marketItem);
                 }
                 repository.Remove(id);
-                return "Purchase is deleted";
+                return "ReturnCustomer is deleted";
             }
             catch (Exception)
             {
@@ -101,14 +100,14 @@ namespace MarketApi.Services
             }
         }
 
-        public string Update(PurchaseUpdateRequest newItem)
+        public string Update(ReturnCustomerUpdateRequest newItem)
         {
             try
             {
                 var _item = repository.GetById(newItem.Id).FirstOrDefault();
                 if (_item is null)
                 {
-                    return "Purchase is not found";
+                    return "ReturnCustomer is not found";
                 }
                 if (newItem.Quantity > _item.Quantity)
                 {
@@ -131,9 +130,9 @@ namespace MarketApi.Services
                 }
                 newItem.SumPrice = newItem.Price * Convert.ToDecimal(newItem.Quantity);
                 newItem.SumPriceUSD = newItem.PriceUSD * Convert.ToDecimal(newItem.Quantity);
-                var mapPurchase = mapper.Map<Purchase>(newItem);
+                var mapPurchase = mapper.Map<ReturnCustomer>(newItem);
                 repository.Update(mapPurchase);
-                return "Purchase is updated";
+                return "ReturnCustomer is updated";
             }
             catch (Exception)
             {

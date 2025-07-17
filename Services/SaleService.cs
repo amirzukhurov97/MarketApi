@@ -7,44 +7,42 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MarketApi.Services
 {
-    public class PurchaseService(IPurchaseRepository repository, IMarketRopository marketRopository, IMapper mapper) : IGenericService<PurchaseRequest, PurchaseUpdateRequest, PurchaseResponse>
+    public class SaleService(ISaleRepository repository, IMarketRopository marketRopository, IMapper mapper) : IGenericService<SaleRequest, SaleUpdateRequest, SaleResponse>
     {
-        public string Create(PurchaseRequest item)
+        public string Create(SaleRequest item)
         {
             try
-            {                
-                 item.SumPrice = item.Price * Convert.ToDecimal(item.Quantity);
-                    item.SumPriceUSD = item.PriceUSD * Convert.ToDecimal(item.Quantity);
-                    var mapQuantity = mapper.Map<Purchase>(item);
-                    
-                    var marketItem = new Market
-                    {
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity
-                    };
-                    var marketResponse = marketRopository.Income(marketItem);
-                    repository.Add(mapQuantity);
-                return $"Created new newItem with this ID: {mapQuantity.Id}";   
-                
+            {
+                item.SumPrice = item.Price * Convert.ToDecimal(item.Quantity);
+                item.SumPriceUSD = item.PriceUSD * Convert.ToDecimal(item.Quantity);
+                var mapQuantity = mapper.Map<Sale>(item);
+                var marketItem = new Market
+                {
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity
+                };
+                var marketResponse = marketRopository.Expense(marketItem);
+                repository.Add(mapQuantity);
+                return $"Created new newItem with this ID: {mapQuantity.Id}";
+
             }
             catch (Exception)
             {
                 throw;
             }
-            
         }
 
-        public IEnumerable<PurchaseResponse> GetAll()
+        public IEnumerable<SaleResponse> GetAll()
         {
             try
             {
-                List<PurchaseResponse>? responses = new List<PurchaseResponse>();
-                var purchases = repository.GetAll().Include(pc => pc.Product).Include(pm => pm.Organization).ToList();
+                List<SaleResponse>? responses = new List<SaleResponse>();
+                var purchases = repository.GetAll().Include(pc => pc.Product).Include(pm => pm.Customer).ToList();
                 if (purchases.Count > 0)
                 {
                     foreach (var purchase in purchases)
                     {
-                        var response = mapper.Map<PurchaseResponse>(purchase);
+                        var response = mapper.Map<SaleResponse>(purchase);
                         responses.Add(response);
                     }
                 }
@@ -56,15 +54,15 @@ namespace MarketApi.Services
             }
         }
 
-        public PurchaseResponse GetById(Guid id)
+        public SaleResponse GetById(Guid id)
         {
             try
             {
-                PurchaseResponse responses = null;
-                var purchaseList = repository.GetById(id).Include(pc => pc.Product).Include(pm => pm.Organization).FirstOrDefault();
+                SaleResponse responses = null;
+                var purchaseList = repository.GetById(id).Include(pc => pc.Product).Include(pm => pm.Customer).FirstOrDefault();
                 if (purchaseList != null)
                 {
-                    responses = mapper.Map<PurchaseResponse>(purchaseList);
+                    responses = mapper.Map<SaleResponse>(purchaseList);
                 }
                 return responses;
             }
@@ -81,7 +79,7 @@ namespace MarketApi.Services
                 var _item = repository.GetById(id).FirstOrDefault();
                 if (_item is null)
                 {
-                    return "Purchase is not found";
+                    return "Sale is not found";
                 }
                 if (_item.Quantity > 0)
                 {
@@ -90,10 +88,10 @@ namespace MarketApi.Services
                         ProductId = _item.ProductId,
                         Quantity = _item.Quantity
                     };
-                    marketRopository.Expense(marketItem);
+                    marketRopository.Income(marketItem);
                 }
                 repository.Remove(id);
-                return "Purchase is deleted";
+                return "Sale is deleted";
             }
             catch (Exception)
             {
@@ -101,14 +99,14 @@ namespace MarketApi.Services
             }
         }
 
-        public string Update(PurchaseUpdateRequest newItem)
+        public string Update(SaleUpdateRequest newItem)
         {
             try
             {
                 var _item = repository.GetById(newItem.Id).FirstOrDefault();
                 if (_item is null)
                 {
-                    return "Purchase is not found";
+                    return "Sale is not found";
                 }
                 if (newItem.Quantity > _item.Quantity)
                 {
@@ -117,7 +115,7 @@ namespace MarketApi.Services
                         ProductId = _item.ProductId,
                         Quantity = newItem.Quantity - _item.Quantity
                     };
-                    marketRopository.Income(marketItem);
+                    marketRopository.Expense(marketItem);
                 }
                 else
                 {
@@ -126,14 +124,14 @@ namespace MarketApi.Services
                         ProductId = _item.ProductId,
                         Quantity = _item.Quantity - newItem.Quantity
                     };
-                    marketRopository.Expense(marketItem);
+                    marketRopository.Income(marketItem);
 
                 }
                 newItem.SumPrice = newItem.Price * Convert.ToDecimal(newItem.Quantity);
                 newItem.SumPriceUSD = newItem.PriceUSD * Convert.ToDecimal(newItem.Quantity);
-                var mapPurchase = mapper.Map<Purchase>(newItem);
+                var mapPurchase = mapper.Map<Sale>(newItem);
                 repository.Update(mapPurchase);
-                return "Purchase is updated";
+                return "Sale is updated";
             }
             catch (Exception)
             {

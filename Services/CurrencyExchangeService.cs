@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MarketApi.DTOs.CurrencyExchange;
 using MarketApi.Infrastructure.Interfacies;
+using MarketApi.Infrastructure.Repositories;
 using MarketApi.Models;
 
 namespace MarketApi.Services
@@ -89,6 +90,17 @@ namespace MarketApi.Services
             catch (Exception)
             {
                 throw;
+            }
+        }
+        public decimal CurrencyRate()
+        {
+            try
+            {
+                return repository.GetActual();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error retrieving the actual currency exchange rate.", ex);
             }
         }
     }

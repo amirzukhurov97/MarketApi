@@ -1,9 +1,8 @@
-﻿using MarketApi.DTOs.EntityBase;
-using MarketApi.Models.Abstract.Entity;
+﻿using MarketApi.Models.Abstract.Entity;
 
 namespace MarketApi.DTOs.ReturnCustomer
 {
-    public record ReturnCustomerRequest : EntityBaseRequest
+    public record ReturnCustomerUpdateRequest : EntityBaseUpdateRequest
     {
         public decimal Price { get; set; }
         public decimal PriceUSD { get; set; }

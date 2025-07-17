@@ -1,5 +1,7 @@
 ﻿using MarketApi.DTOs.Product;
 using MarketApi.DTOs.Purchase;
+using MarketApi.DTOs.ReturnOrganization;
+using MarketApi.DTOs.Sale;
 using MarketApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -9,10 +11,10 @@ namespace MarketApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PurchaseController(IGenericService<PurchaseRequest, PurchaseUpdateRequest, PurchaseResponse> service, ILogger<PurchaseController> logger) : ControllerBase
+    public class ReturnOrganizationController(IGenericService<ReturnOrganizationRequest, ReturnOrganizationUpdateRequest, ReturnOrganizationResponse> service, ILogger<ReturnOrganizationController> logger) : ControllerBase
     {
         [HttpPost]
-        public ActionResult<string> Create([FromBody]PurchaseRequest productRequest)
+        public ActionResult<string> Create([FromBody] ReturnOrganizationRequest productRequest)
         {
             try
             {                
@@ -36,12 +38,12 @@ namespace MarketApi.Controllers
         {
             try
             {
-                var purchases = service.GetAll();
-                if (purchases is null || !purchases.Any())
+                var sales = service.GetAll();
+                if (sales is null || !sales.Any())
                 {
-                    return NotFound("No purchases found.");
+                    return NotFound("No Sale found.");
                 }
-                return Ok(purchases);
+                return Ok(sales);
 
             }
             catch (SqlException ex)
@@ -84,30 +86,30 @@ namespace MarketApi.Controllers
         {
             try
             {
-                logger.LogInformation($"Deleting Purchase with ID: {id} from the database.");
+                logger.LogInformation($"Deleting Sale with ID: {id} from the database.");
                 var resDel = service.Remove(id);
                 return Ok(resDel);
 
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"An error occurred while deleting Purchase with ID: {id}.");
+                logger.LogError(ex, $"An error occurred while deleting Sale with ID: {id}.");
                 throw new Exception(ex.Message);
             }
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody]PurchaseUpdateRequest purchaseUpdate)
+        public IActionResult Put([FromBody] ReturnOrganizationUpdateRequest saleUpdate)
         {
             try
             {
-                logger.LogInformation($"Updating Purchase with ID: {purchaseUpdate.Id} in the database.");
-                var product = service.Update(purchaseUpdate);
+                logger.LogInformation($"Updating Sale with ID: {saleUpdate.Id} in the database.");
+                var product = service.Update(saleUpdate);
                 return Ok(product);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"An error occurred while updating Purchase with ID: {purchaseUpdate.Id}.");
+                logger.LogError(ex, $"An error occurred while updating Sale with ID: {saleUpdate.Id}.");
                 throw new Exception(ex.Message);
             }
         }
