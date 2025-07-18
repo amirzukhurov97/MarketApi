@@ -1,8 +1,8 @@
 using FluentValidation;
+using Market.Mappers;
 using MarketApi.DTOs.Address;
 using MarketApi.DTOs.CurrencyExchange;
 using MarketApi.DTOs.Customer;
-using MarketApi.DTOs.Market;
 using MarketApi.DTOs.Measurement;
 using MarketApi.DTOs.Organization;
 using MarketApi.DTOs.OrganizationType;
@@ -47,7 +47,7 @@ builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IOrganizationTypeRepository, OrganizationTypeRepository>();
 builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
-builder.Services.AddScoped<ICurrencyExchangeRepository, CurrencyExchangeRepository>();
+builder.Services.AddScoped<ICurrencyExchangeRepository, CurrencyExchangeRepository>(); 
 builder.Services.AddScoped<IMarketRopository, MarketRepository>();
 
 builder.Services.AddScoped<IGenericService<ProductRequest, ProductUpdateRequest, ProductResponse>, ProductServise>();

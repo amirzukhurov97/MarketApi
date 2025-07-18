@@ -7,19 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Mappers\ProductCategoryProfile.cs" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="14.0.0" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageReference Include="Mapster" Version="7.4.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+	  <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="Serilog" Version="4.3.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
@@ -34,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Market.Application\Market.Application.csproj" />
+    <ProjectReference Include="..\Market.Infrastructure\Market.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
